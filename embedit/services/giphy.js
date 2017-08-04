@@ -17,7 +17,7 @@ class GiphyService {
         return new Promise(function (resolve, reject) {
             var apiKey;
 
-            if (process.env.GIPHYAPIKEY) {
+            if (process.env.GIPHYAPIKEY && process.env.GIPHYAPIKEY.length > 1) {
                 apiKey = process.env.GIPHYAPIKEY;
             } else {
                 try {

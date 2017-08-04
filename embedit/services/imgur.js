@@ -17,7 +17,8 @@ class ImgurService {
         return new Promise(function (resolve, reject) {
             var clientID;
 
-            if (process.env.IMGURCLIENTID) {
+            console.log(process.env.IMGURCLIENTID);
+            if (process.env.IMGURCLIENTID && process.env.IMGURCLIENTID.length > 1) {
                 clientID = process.env.IMGURCLIENTID
             } else {
                 try {
