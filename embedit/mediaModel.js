@@ -6,9 +6,13 @@
  */
 class MediaModel {
 
+    /**
+     * 
+     * @param {object} attributes - A map of model properties. see defaultProperties for example
+     */
     constructor(attributes) {
 
-        var _properties = {
+        const defaultProperties = {
             'name': '',
             'service': '',
             'source': '',
@@ -19,13 +23,14 @@ class MediaModel {
             'credit': '',
         };
 
+        // Replace any matching keys in our default properties with ones provided by caller
         for (var key in attributes) {
-            if (_properties[key] != undefined) {
-                _properties[key] = attributes[key];
+            if (defaultProperties[key] != undefined) {
+                defaultProperties[key] = attributes[key];
             }
         }
 
-        this.properties = _properties;
+        this.properties = defaultProperties;
     }
 
     getProperties() {

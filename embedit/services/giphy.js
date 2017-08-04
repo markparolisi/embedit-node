@@ -1,9 +1,17 @@
-var mediaModel = require('../mediaModel.js');
-var config = require('config');
-var Giphy = require('giphy')
+const MediaModel = require('../mediaModel.js');
+const config = require('config');
+const Giphy = require('giphy')
 
+/**
+ * Class to handle Giphy requests
+ */
 class GiphyService {
 
+    /**
+     * Fetch media from the service and return a list of MediaModels
+     * 
+     * @param {string} searchQuery - The client-requested search term
+     */
     getMedia(searchQuery) {
 
         return new Promise(function (resolve, reject) {
@@ -18,17 +26,19 @@ class GiphyService {
 
             giphy.search(params, function (err, m, res) {
 
-                if (err) {
-                    return;
-                }
-
                 var mediaModels = [];
 
+                // Just send back an empty list on error
+                if (err) {
+                    return mediaModels;
+                }
+
+                // Iterate over all of the JSON objects and convert them into MediaModels
                 m.data.forEach((element) => {
 
                     var created = new Date(Date.parse(element.import_datetime)).toISOString();
 
-                    var giphyModel = new mediaModel({
+                    var giphyModel = new MediaModel({
                         name: element.slug,
                         service: "Giphy",
                         mediaURL: element.url,
@@ -42,7 +52,11 @@ class GiphyService {
                     mediaModels.push(giphyModel);
                 });
 
-                resolve(mediaModels);
+                if (mediaModels) {
+                    resolve(mediaModels);
+                } else {
+                    reject();
+                }
             });
         });
     }

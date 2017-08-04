@@ -6,16 +6,22 @@ const router = express.Router();
 const GiphyService = require('./embedit/services/giphy.js');
 const ImgurService = require('./embedit/services/imgur.js');
 
+/**
+ * Just send back plain text instructions to use the /media endpoint
+ */
 router.get('/', function (req, res) {
-    res.send('Please access the service at /media');
+    res.send('Please access the service at /media?q={SEARCH_TERM}&services={SERVICES_CSV}');
 });
 
+/**
+ * Main endpoint for the services
+ */
 router.get('/media', function (req, res) {
 
-    const query = req.query.q
-    const services = req.query.services.toLowerCase();
-    const servicesList = services.split(',');
+    let query = req.query.q
+    let services = req.query.services;
 
+    // Require both the search term and services list to proceed. Message appropriately
     if (!(query) || !(services)) {
 
         var message = "";
@@ -29,36 +35,47 @@ router.get('/media', function (req, res) {
         }
 
         res.status(400);
-        return res.json({ message: message });
+        return res.json({ error: message });
     }
+
+    // Since both params are defined, clean them up for use
+    query = encodeURIComponent(query);
+    services = services.toLowerCase();
+    const servicesList = services.split(',');
 
     console.log("Searching query: " + query);
     console.log("Searching services: " + services);
 
+    /**
+     * Call each of the services requested
+     */
     async function requests() {
-        try {
-            var mediaModels = [];
 
+        var mediaModels = [];
 
-            if (servicesList.includes('giphy')) {
-                mediaModels = mediaModels.concat(await GiphyService.getMedia(query));
-            }
-
-            if (servicesList.includes('imgur')) {
-                mediaModels = mediaModels.concat(await ImgurService.getMedia(query));
-            }
-
-            mediaModels = mediaModels.map(function (m) {
-                return m.properties;
-            });
-
-            res.json(mediaModels);
-        } catch (error) {
-            error(error);
+        if (servicesList.includes('giphy')) {
+            mediaModels = mediaModels.concat(await GiphyService.getMedia(query));
         }
+
+        if (servicesList.includes('imgur')) {
+            mediaModels = mediaModels.concat(await ImgurService.getMedia(query));
+        }
+
+        mediaModels = mediaModels.map(function (m) {
+            return m.properties;
+        });
+
+        res.json(mediaModels);
+
     }
 
-    requests();
+    try {
+        requests();
+    } catch (e) {
+        console.error(e);
+        res.status(500);
+        return res.json({ error: e.message });
+    }
 
 });
 

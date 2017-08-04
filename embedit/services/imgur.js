@@ -1,16 +1,24 @@
-const mediaModel = require('../mediaModel.js');
+const MediaModel = require('../mediaModel.js');
 const config = require('config');
 const https = require('https');
 
+/**
+ * Class to handle Imgur requests
+ */
 class ImgurService {
 
+    /**
+     * Fetch media from the service and return a list of MediaModels
+     * 
+     * @param {string} searchQuery - The client-requested search term
+     */
     getMedia(searchQuery) {
 
         return new Promise(function (resolve, reject) {
 
             const options = {
                 hostname: 'api.imgur.com',
-                path: '/3/gallery/search/viral/?q=cat',
+                path: '/3/gallery/search/top/?q=' + searchQuery,
                 headers: { 'Authorization': 'Client-ID ' + config.get('imgur.clientID') },
                 method: 'GET'
             };
@@ -28,6 +36,7 @@ class ImgurService {
                     const elements = JSON.parse(body).data;
                     var mediaModels = [];
 
+                    // Iterate over JSON elements and build a list of MediaModels
                     elements.forEach((element) => {
 
                         if (element.is_album === true) {
@@ -36,7 +45,7 @@ class ImgurService {
 
                         var created = new Date(element.datetime).toISOString();
 
-                        var imgurModel = new mediaModel({
+                        var imgurModel = new MediaModel({
                             name: element.title,
                             service: 'Imgur',
                             mediaURL: element.link,
@@ -50,7 +59,11 @@ class ImgurService {
                         mediaModels.push(imgurModel);
                     });
 
-                    resolve(mediaModels);
+                    if (mediaModels) {
+                        resolve(mediaModels);
+                    } else {
+                        reject();
+                    }
                 });
 
             });
