@@ -1,9 +1,10 @@
 process.env.SUPPRESS_NO_CONFIG_WARNING = 1;
-var express = require('express');
-var app = express();
-var port = process.env.PORT || 8080;
-var router = express.Router();
-var GiphyService = require('./embedit/services/giphy.js');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 8080;
+const router = express.Router();
+const GiphyService = require('./embedit/services/giphy.js');
+const ImgurService = require('./embedit/services/imgur.js');
 
 router.get('/', function (req, res) {
     res.send('Please access the service at /media');
@@ -11,8 +12,9 @@ router.get('/', function (req, res) {
 
 router.get('/media', function (req, res) {
 
-    var query = req.query.q
-    var services = req.query.services
+    const query = req.query.q
+    const services = req.query.services.toLowerCase();
+    const servicesList = services.split(',');
 
     if (!(query) || !(services)) {
 
@@ -35,7 +37,16 @@ router.get('/media', function (req, res) {
 
     async function requests() {
         try {
-            var mediaModels = await GiphyService.getMedia(query);
+            var mediaModels = [];
+
+
+            if (servicesList.includes('giphy')) {
+                mediaModels = mediaModels.concat(await GiphyService.getMedia(query));
+            }
+
+            if (servicesList.includes('imgur')) {
+                mediaModels = mediaModels.concat(await ImgurService.getMedia(query));
+            }
 
             mediaModels = mediaModels.map(function (m) {
                 return m.properties;
@@ -43,7 +54,7 @@ router.get('/media', function (req, res) {
 
             res.json(mediaModels);
         } catch (error) {
-            console.error(error);
+            error(error);
         }
     }
 
