@@ -15,8 +15,21 @@ class ImgurService {
     getMedia(searchQuery) {
 
         return new Promise(function (resolve, reject) {
+            var clientID;
 
-            const clientID = process.env.IMGURCLIENTID || config.get('imgur.clientID');
+            if (process.env.IMGURCLIENTID) {
+                clientID = process.env.IMGURCLIENTID
+            } else {
+                try {
+                    clientID = config.get('imgur.clientID')
+                } catch (e) {
+                    reject(e);
+                }
+            }
+
+            if (!(clientID)) {
+                reject(new Error("Missing Imgur Client ID"));
+            }
 
             const options = {
                 hostname: 'api.imgur.com',

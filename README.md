@@ -10,6 +10,11 @@ _This is NOT a production-ready service. It's just a demo_
 1. `npm start`
 1. Query example: http://localhost:8080/media?q=pizza&services=imgur,giphy
 
+or Run the Docker instance
+
+1. `docker build -t=embedit/node --rm=true .`
+1. `docker run -t -p 8080:8080 embedit/node`
+
 ### Sample response
 
 ```

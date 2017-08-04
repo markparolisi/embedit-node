@@ -1,3 +1,5 @@
+"use strict";
+
 process.env.SUPPRESS_NO_CONFIG_WARNING = 1;
 const express = require('express');
 const app = express();
@@ -24,7 +26,7 @@ router.get('/media', function (req, res) {
     // Require both the search term and services list to proceed. Message appropriately
     if (!(query) || !(services)) {
 
-        var message = "";
+        let message = "";
 
         if (!(query)) {
             message += "Missing search query. ";
@@ -51,21 +53,27 @@ router.get('/media', function (req, res) {
      */
     async function requests() {
 
-        var mediaModels = [];
+        try {
+            let mediaModels = [];
 
-        if (servicesList.includes('giphy')) {
-            mediaModels = mediaModels.concat(await GiphyService.getMedia(query));
+            if (servicesList.includes('giphy')) {
+                mediaModels = mediaModels.concat(await GiphyService.getMedia(query));
+            }
+
+            if (servicesList.includes('imgur')) {
+                mediaModels = mediaModels.concat(await ImgurService.getMedia(query));
+            }
+
+            mediaModels = mediaModels.map(function (m) {
+                return m.properties;
+            });
+
+            res.json(mediaModels);
+        } catch (e) {
+            console.error(e);
+            res.status(500);
+            return res.json({ error: e.message });
         }
-
-        if (servicesList.includes('imgur')) {
-            mediaModels = mediaModels.concat(await ImgurService.getMedia(query));
-        }
-
-        mediaModels = mediaModels.map(function (m) {
-            return m.properties;
-        });
-
-        res.json(mediaModels);
 
     }
 

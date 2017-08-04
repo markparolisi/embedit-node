@@ -15,8 +15,22 @@ class GiphyService {
     getMedia(searchQuery) {
 
         return new Promise(function (resolve, reject) {
+            var apiKey;
 
-            const apiKey = process.env.GIPHYAPIKEY || config.get('giphy.apiKey');
+            if (process.env.GIPHYAPIKEY) {
+                apiKey = process.env.GIPHYAPIKEY;
+            } else {
+                try {
+                    apiKey = process.env.GIPHYAPIKEY || config.get('giphy.apiKey');
+                } catch (e) {
+                    reject(e);
+                }
+            }
+
+            if (!(apiKey)) {
+                reject(new Error("Missing Giphy API Key"));
+            }
+
             let giphy = new Giphy(apiKey);
 
             const params = {
