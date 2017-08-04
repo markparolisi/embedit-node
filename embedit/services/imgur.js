@@ -16,10 +16,12 @@ class ImgurService {
 
         return new Promise(function (resolve, reject) {
 
+            const clientID = process.env.IMGURCLIENTID || config.get('imgur.clientID');
+
             const options = {
                 hostname: 'api.imgur.com',
                 path: '/3/gallery/search/top/?q=' + searchQuery,
-                headers: { 'Authorization': 'Client-ID ' + config.get('imgur.clientID') },
+                headers: { 'Authorization': 'Client-ID ' + clientID },
                 method: 'GET'
             };
 

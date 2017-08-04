@@ -16,7 +16,8 @@ class GiphyService {
 
         return new Promise(function (resolve, reject) {
 
-            let giphy = new Giphy(config.get('giphy.apiKey'));
+            const apiKey = process.env.GIPHYAPIKEY || config.get('giphy.apiKey');
+            let giphy = new Giphy(apiKey);
 
             const params = {
                 'q': searchQuery,
