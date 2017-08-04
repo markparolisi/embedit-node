@@ -1,0 +1,35 @@
+{
+    "name": "embedit",
+    "version": "0.1.0",
+    "description": "JSON service to aggregate social media embeds",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "lint": "./node_modules/.bin/eslint **/*.js",
+        "test": "./node_modules/mocha/bin/mocha tests/*.js"
+    },
+    "dependencies": {
+        "config": "1.26.1",
+        "express": "4.15.3",
+        "giphy": "0.0.4",
+        "request": "2.81.0"
+    },
+    "devDependencies": {
+        "eslint": "4.3.0",
+        "mocha": "3.4.2",
+        "chai": "4.1.0"
+    },
+    "engines": {
+        "node": "7.10.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/markparolisi/embedit-node"
+    },
+    "keywords": [
+        "node",
+        "express"
+    ],
+    "author": "Mark Parolisi",
+    "license": "MIT"
+}
