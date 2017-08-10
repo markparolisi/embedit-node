@@ -7,6 +7,7 @@ const port = process.env.PORT || 8080;
 const router = express.Router();
 const GiphyService = require('./embedit/services/giphy.js');
 const ImgurService = require('./embedit/services/imgur.js');
+const shuffle = require('lodash.shuffle');
 
 /**
  * Just send back plain text instructions to use the /media endpoint
@@ -68,6 +69,8 @@ router.get('/media', function (req, res) {
                 return m.properties;
             });
             
+            mediaModels = shuffle(mediaModels);
+
             res.header('Access-Control-Allow-Origin', '*');
             res.json(mediaModels);
         } catch (e) {

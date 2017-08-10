@@ -12,7 +12,8 @@
         "config": "1.26.1",
         "express": "4.15.3",
         "giphy": "0.0.4",
-        "request": "2.81.0"
+        "request": "2.81.0",
+        "lodash.shuffle": "4.2.0"
     },
     "devDependencies": {
         "prettier": "1.5.3",
