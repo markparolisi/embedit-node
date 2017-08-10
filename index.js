@@ -67,7 +67,8 @@ router.get('/media', function (req, res) {
             mediaModels = mediaModels.map(function (m) {
                 return m.properties;
             });
-
+            
+            res.header('Access-Control-Allow-Origin', '*');
             res.json(mediaModels);
         } catch (e) {
             console.error(e);
