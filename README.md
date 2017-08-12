@@ -15,6 +15,10 @@ or Run the Docker instance
 1. `docker build -t=embedit/node --rm=true .`
 1. `docker run -t -p 8080:8080 -e IMGURCLIENTID={VAR} -e GIPHYAPIKEY={VAR} embedit/node`
 
+there is also a Heroku instance running at:
+
+https://embedit-node.herokuapp.com/media/?q=pizza&services=imgur,giphy
+
 ### Sample response
 
 ```
